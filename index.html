@@ -48,14 +48,8 @@
         <h2>Registrera inköp</h2>
         <form id="inkop-form">
             <input type="date" id="inkop-datum" required>
-            <select id="inkop-artikel" required>
-                <option value="">Välj artikel</option>
-            </select>
-            <input type="text" id="inkop-produkt" placeholder="Eller skriv produktnamn" style="display:none;">
-            <input type="number" id="inkop-antal" placeholder="Antal" min="1" required>
-            <input type="number" id="inkop-kostnad" placeholder="Kostnad per styck" step="0.01" min="0" required>
-            <input type="text" id="inkop-leverantor" placeholder="Leverantör" required>
-            <textarea id="inkop-anteckning" placeholder="Anteckning (valfritt)"></textarea>
+            <input type="number" id="inkop-summa" placeholder="Summa" step="0.01" min="0" required>
+            <textarea id="inkop-anteckning" placeholder="Anteckning"></textarea>
             <button type="submit">🛒 Registrera inköp</button>
         </form>
 
