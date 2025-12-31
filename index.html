@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubbelbudget - Hobbybokföring</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196F3">
+</head>
+<body>
+    <header>
+        <h1>🫧 Bubbelbudget</h1>
+        <p>Enkel bokföring för hobbyverksamhet</p>
+    </header>
+
+    <nav class="tab-nav">
+        <button class="tab-button active" onclick="showTab('forsaljning')">💰 Försäljning</button>
+        <button class="tab-button" onclick="showTab('inkop')">🛒 Inköp</button>
+        <button class="tab-button" onclick="showTab('lager')">📦 Lager</button>
+        <button class="tab-button" onclick="showTab('rapport')">📊 Rapport</button>
+    </nav>
+
+    <!-- Försäljning -->
+    <div id="forsaljning" class="tab-content active">
+        <h2>Registrera försäljning</h2>
+        <form id="forsaljning-form">
+            <input type="date" id="forsaljning-datum" required>
+            <input type="text" id="forsaljning-produkt" placeholder="Produktnamn" required>
+            <input type="number" id="forsaljning-antal" placeholder="Antal" min="1" required>
+            <input type="number" id="forsaljning-pris" placeholder="Pris per styck" step="0.01" min="0" required>
+            <textarea id="forsaljning-anteckning" placeholder="Anteckning (valfritt)"></textarea>
+            <button type="submit">💰 Registrera försäljning</button>
+        </form>
+
+        <div class="transaction-list">
+            <h3>Senaste försäljningar</h3>
+            <div id="forsaljning-lista"></div>
+        </div>
+    </div>
+
+    <!-- Inköp -->
+    <div id="inkop" class="tab-content">
+        <h2>Registrera inköp</h2>
+        <form id="inkop-form">
+            <input type="date" id="inkop-datum" required>
+            <input type="text" id="inkop-produkt" placeholder="Produktnamn" required>
+            <input type="number" id="inkop-antal" placeholder="Antal" min="1" required>
+            <input type="number" id="inkop-kostnad" placeholder="Kostnad per styck" step="0.01" min="0" required>
+            <input type="text" id="inkop-leverantor" placeholder="Leverantör" required>
+            <textarea id="inkop-anteckning" placeholder="Anteckning (valfritt)"></textarea>
+            <button type="submit">🛒 Registrera inköp</button>
+        </form>
+
+        <div class="transaction-list">
+            <h3>Senaste inköp</h3>
+            <div id="inkop-lista"></div>
+        </div>
+    </div>
+
+    <!-- Lager -->
+    <div id="lager" class="tab-content">
+        <h2>Lagerhantering</h2>
+        <div class="lager-summary">
+            <h3>Lagerstatus</h3>
+            <div id="lager-lista"></div>
+        </div>
+
+        <div class="lager-actions">
+            <h3>Manuell lagerjustering</h3>
+            <form id="lager-form">
+                <input type="text" id="lager-produkt" placeholder="Produktnamn" required>
+                <input type="number" id="lager-antal" placeholder="Nytt antal i lager" min="0" required>
+                <textarea id="lager-anteckning" placeholder="Anledning till justering"></textarea>
+                <button type="submit">📦 Uppdatera lager</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rapport -->
+    <div id="rapport" class="tab-content">
+        <h2>Ekonomisk översikt</h2>
+        <div class="rapport-summary">
+            <div class="summary-card">
+                <h3>💰 Total försäljning</h3>
+                <p id="total-forsaljning">0 kr</p>
+            </div>
+            <div class="summary-card">
+                <h3>🛒 Total inköp</h3>
+                <p id="total-inkop">0 kr</p>
+            </div>
+            <div class="summary-card">
+                <h3>📈 Vinst/Förlust</h3>
+                <p id="total-vinst">0 kr</p>
+            </div>
+        </div>
+
+        <div class="rapport-actions">
+            <button onclick="exportData()">📤 Exportera data</button>
+            <button onclick="importData()">📥 Importera data</button>
+            <button onclick="clearAllData()" class="danger">🗑️ Rensa all data</button>
+        </div>
+
+        <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImport(event)">
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
