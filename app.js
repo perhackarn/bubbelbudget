@@ -180,6 +180,75 @@ function setInventory(product, quantity, reason) {
 }
 
 // Display functions
+function displayArticles() {
+    const articles = getArticles().sort((a, b) => a.namn.localeCompare(b.namn));
+    const container = document.getElementById('artikel-lista');
+    
+    if (articles.length === 0) {
+        container.innerHTML = '<div class="empty-state">Inga artiklar registrerade ännu</div>';
+        return;
+    }
+    
+    container.innerHTML = articles.map(article => `
+        <div class="transaction-item">
+            <button class="delete-btn" onclick="deleteArticle('${article.id}')" title="Ta bort">×</button>
+            <div class="transaction-header">
+                <span class="transaction-product">${article.namn}</span>
+                <span class="transaction-amount positive">${article.forsaljningspris.toFixed(2)} kr</span>
+            </div>
+            <div class="transaction-details">
+                ${article.beskrivning ? `<div>📝 ${article.beskrivning}</div>` : ''}
+                ${article.kategori ? `<div>🏷️ ${article.kategori}</div>` : ''}
+                ${article.inkopspris > 0 ? `<div>💰 Inköpspris: ${article.inkopspris.toFixed(2)} kr</div>` : ''}
+                ${article.anteckning ? `<div>💭 ${article.anteckning}</div>` : ''}
+                <div>📅 Skapad: ${formatDate(article.skapad.split('T')[0])}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getArticles() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.ARTICLES) || '[]');
+}
+
+function updateArticleDropdowns() {
+    const articles = getArticles().sort((a, b) => a.namn.localeCompare(b.namn));
+    
+    // Update sale dropdown
+    const saleSelect = document.getElementById('forsaljning-artikel');
+    saleSelect.innerHTML = '<option value="">Välj artikel</option>';
+    articles.forEach(article => {
+        const option = document.createElement('option');
+        option.value = article.namn;
+        option.textContent = `${article.namn} (${article.forsaljningspris.toFixed(2)} kr)`;
+        option.dataset.price = article.forsaljningspris;
+        saleSelect.appendChild(option);
+    });
+    
+    // Add manual option
+    const manualOption = document.createElement('option');
+    manualOption.value = 'manual';
+    manualOption.textContent = '➕ Skriv egen produkt';
+    saleSelect.appendChild(manualOption);
+    
+    // Update purchase dropdown  
+    const purchaseSelect = document.getElementById('inkop-artikel');
+    purchaseSelect.innerHTML = '<option value="">Välj artikel</option>';
+    articles.forEach(article => {
+        const option = document.createElement('option');
+        option.value = article.namn;
+        option.textContent = `${article.namn}${article.inkopspris > 0 ? ` (${article.inkopspris.toFixed(2)} kr)` : ''}`;
+        option.dataset.price = article.inkopspris || 0;
+        purchaseSelect.appendChild(option);
+    });
+    
+    // Add manual option
+    const purchaseManualOption = document.createElement('option');
+    purchaseManualOption.value = 'manual';
+    purchaseManualOption.textContent = '➕ Skriv egen produkt';
+    purchaseSelect.appendChild(purchaseManualOption);
+}
+
 function loadAllData() {
     displaySales();
     displayPurchases();
@@ -406,10 +475,6 @@ function saveArticle(article) {
     localStorage.setItem(STORAGE_KEYS.ARTICLES, JSON.stringify(articles));
 }
 
-function getArticles() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.ARTICLES) || '[]');
-}
-
 function deleteArticle(id) {
     if (!confirm('Är du säker på att du vill ta bort denna artikel?')) return;
     
@@ -417,71 +482,6 @@ function deleteArticle(id) {
     const filteredArticles = articles.filter(article => article.id !== id);
     localStorage.setItem(STORAGE_KEYS.ARTICLES, JSON.stringify(filteredArticles));
     loadAllData();
-}
-
-function displayArticles() {
-    const articles = getArticles().sort((a, b) => a.namn.localeCompare(b.namn));
-    const container = document.getElementById('artikel-lista');
-    
-    if (articles.length === 0) {
-        container.innerHTML = '<div class="empty-state">Inga artiklar registrerade ännu</div>';
-        return;
-    }
-    
-    container.innerHTML = articles.map(article => `
-        <div class="transaction-item">
-            <button class="delete-btn" onclick="deleteArticle('${article.id}')" title="Ta bort">×</button>
-            <div class="transaction-header">
-                <span class="transaction-product">${article.namn}</span>
-                <span class="transaction-amount positive">${article.forsaljningspris.toFixed(2)} kr</span>
-            </div>
-            <div class="transaction-details">
-                ${article.beskrivning ? `<div>📝 ${article.beskrivning}</div>` : ''}
-                ${article.kategori ? `<div>🏷️ ${article.kategori}</div>` : ''}
-                ${article.inkopspris > 0 ? `<div>💰 Inköpspris: ${article.inkopspris.toFixed(2)} kr</div>` : ''}
-                ${article.anteckning ? `<div>💭 ${article.anteckning}</div>` : ''}
-                <div>📅 Skapad: ${formatDate(article.skapad.split('T')[0])}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function updateArticleDropdowns() {
-    const articles = getArticles().sort((a, b) => a.namn.localeCompare(b.namn));
-    
-    // Update sale dropdown
-    const saleSelect = document.getElementById('forsaljning-artikel');
-    saleSelect.innerHTML = '<option value="">Välj artikel</option>';
-    articles.forEach(article => {
-        const option = document.createElement('option');
-        option.value = article.namn;
-        option.textContent = `${article.namn} (${article.forsaljningspris.toFixed(2)} kr)`;
-        option.dataset.price = article.forsaljningspris;
-        saleSelect.appendChild(option);
-    });
-    
-    // Add manual option
-    const manualOption = document.createElement('option');
-    manualOption.value = 'manual';
-    manualOption.textContent = '➕ Skriv egen produkt';
-    saleSelect.appendChild(manualOption);
-    
-    // Update purchase dropdown  
-    const purchaseSelect = document.getElementById('inkop-artikel');
-    purchaseSelect.innerHTML = '<option value="">Välj artikel</option>';
-    articles.forEach(article => {
-        const option = document.createElement('option');
-        option.value = article.namn;
-        option.textContent = `${article.namn}${article.inkopspris > 0 ? ` (${article.inkopspris.toFixed(2)} kr)` : ''}`;
-        option.dataset.price = article.inkopspris || 0;
-        purchaseSelect.appendChild(option);
-    });
-    
-    // Add manual option
-    const purchaseManualOption = document.createElement('option');
-    purchaseManualOption.value = 'manual';
-    purchaseManualOption.textContent = '➕ Skriv egen produkt';
-    purchaseSelect.appendChild(purchaseManualOption);
 }
 
 function handleSaleArticleChange() {
