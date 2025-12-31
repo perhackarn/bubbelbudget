@@ -108,12 +108,11 @@ function displayPurchases() {
         <div class="transaction-item">
             <button class="delete-btn" onclick="deletePurchase('${purchase.id}')" title="Ta bort">×</button>
             <div class="transaction-header">
-                <span class="transaction-product">${purchase.produkt}</span>
-                <span class="transaction-amount negative">-${purchase.totalbelopp.toFixed(2)} kr</span>
+                <span class="transaction-product">Inköp</span>
+                <span class="transaction-amount negative">-${purchase.summa.toFixed(2)} kr</span>
             </div>
             <div class="transaction-details">
-                <div><span class="transaction-date">${formatDate(purchase.datum)}</span> • ${purchase.antal} st × ${purchase.kostnad.toFixed(2)} kr</div>
-                <div>🏪 ${purchase.leverantor}</div>
+                <div><span class="transaction-date">${formatDate(purchase.datum)}</span></div>
                 ${purchase.anteckning ? `<div>📝 ${purchase.anteckning}</div>` : ''}
             </div>
         </div>
@@ -182,7 +181,7 @@ function displayReport() {
     const purchases = getPurchases();
     
     const totalSales = sales.reduce((sum, sale) => sum + sale.totalbelopp, 0);
-    const totalPurchases = purchases.reduce((sum, purchase) => sum + purchase.totalbelopp, 0);
+    const totalPurchases = purchases.reduce((sum, purchase) => sum + (purchase.summa || purchase.totalbelopp || 0), 0);
     const profit = totalSales - totalPurchases;
     
     const salesEl = document.getElementById('total-forsaljning');
@@ -325,23 +324,14 @@ function handleSaleForm(e) {
 function handlePurchaseForm(e) {
     e.preventDefault();
     
-    const artikelSelect = document.getElementById('inkop-artikel');
-    const produktInput = document.getElementById('inkop-produkt');
-    const produktnamn = artikelSelect.value || produktInput.value;
-    
     const formData = {
         id: Date.now().toString(),
         datum: document.getElementById('inkop-datum').value,
-        produkt: produktnamn,
-        antal: parseInt(document.getElementById('inkop-antal').value),
-        kostnad: parseFloat(document.getElementById('inkop-kostnad').value),
-        leverantor: document.getElementById('inkop-leverantor').value,
-        anteckning: document.getElementById('inkop-anteckning').value,
-        totalbelopp: parseInt(document.getElementById('inkop-antal').value) * parseFloat(document.getElementById('inkop-kostnad').value)
+        summa: parseFloat(document.getElementById('inkop-summa').value),
+        anteckning: document.getElementById('inkop-anteckning').value
     };
     
     savePurchase(formData);
-    updateInventory(formData.produkt, formData.antal, 'Inköp från ' + formData.leverantor);
     e.target.reset();
     setTodayDate();
     loadAllData();
