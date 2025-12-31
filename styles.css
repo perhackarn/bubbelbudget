@@ -95,7 +95,7 @@ form {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-form input, form textarea, form button {
+form input, form select, form textarea, form button {
     width: 100%;
     margin-bottom: 1rem;
     padding: 0.75rem;
@@ -105,7 +105,7 @@ form input, form textarea, form button {
     transition: border-color 0.3s ease;
 }
 
-form input:focus, form textarea:focus {
+form input:focus, form select:focus, form textarea:focus {
     outline: none;
     border-color: #2196F3;
     box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
@@ -114,6 +114,23 @@ form input:focus, form textarea:focus {
 form textarea {
     resize: vertical;
     min-height: 80px;
+}
+
+form select {
+    background: white;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.65rem auto;
+    padding-right: 2.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+form select:focus {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%232196F3' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
 }
 
 form button {

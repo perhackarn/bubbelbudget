@@ -94,7 +94,10 @@
         <div class="lager-actions">
             <h3>Manuell lagerjustering</h3>
             <form id="lager-form">
-                <input type="text" id="lager-produkt" placeholder="Produktnamn" required>
+                <select id="lager-artikel" required>
+                    <option value="">Välj artikel</option>
+                </select>
+                <input type="text" id="lager-produkt" placeholder="Eller skriv produktnamn" style="display:none;">
                 <input type="number" id="lager-antal" placeholder="Nytt antal i lager" min="0" required>
                 <textarea id="lager-anteckning" placeholder="Anledning till justering"></textarea>
                 <button type="submit">📦 Uppdatera lager</button>

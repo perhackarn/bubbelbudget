@@ -202,6 +202,7 @@ function updateArticleDropdowns() {
     
     const saleSelect = document.getElementById('forsaljning-artikel');
     const purchaseSelect = document.getElementById('inkop-artikel');
+    const inventorySelect = document.getElementById('lager-artikel');
     
     if (saleSelect) {
         saleSelect.innerHTML = '<option value="">Välj artikel</option>';
@@ -233,6 +234,21 @@ function updateArticleDropdowns() {
         purchaseManualOption.value = 'manual';
         purchaseManualOption.textContent = '➕ Skriv egen produkt';
         purchaseSelect.appendChild(purchaseManualOption);
+    }
+    
+    if (inventorySelect) {
+        inventorySelect.innerHTML = '<option value="">Välj artikel</option>';
+        articles.forEach(article => {
+            const option = document.createElement('option');
+            option.value = article.namn;
+            option.textContent = article.namn;
+            inventorySelect.appendChild(option);
+        });
+        
+        const inventoryManualOption = document.createElement('option');
+        inventoryManualOption.value = 'manual';
+        inventoryManualOption.textContent = '➕ Skriv egen produkt';
+        inventorySelect.appendChild(inventoryManualOption);
     }
 }
 
@@ -353,12 +369,16 @@ function handleArticleForm(e) {
 function handleInventoryForm(e) {
     e.preventDefault();
     
-    const produkt = document.getElementById('lager-produkt').value;
+    // Get product name from either dropdown or manual input
+    const artikelSelect = document.getElementById('lager-artikel');
+    const produktInput = document.getElementById('lager-produkt');
+    const produktnamn = artikelSelect.value || produktInput.value;
+    
     const antal = parseInt(document.getElementById('lager-antal').value);
     const anteckning = document.getElementById('lager-anteckning').value;
     
     const inventory = getInventory();
-    inventory[produkt] = {
+    inventory[produktnamn] = {
         antal: antal,
         senast_uppdaterad: new Date().toISOString(),
         anledning: anteckning || 'Manuell justering'
@@ -420,6 +440,25 @@ function handlePurchaseArticleChange() {
         produktInput.required = false;
         select.required = true;
         kostnadInput.value = '';
+    }
+}
+
+function handleInventoryArticleChange() {
+    const select = document.getElementById('lager-artikel');
+    const produktInput = document.getElementById('lager-produkt');
+    
+    if (select.value === 'manual') {
+        produktInput.style.display = 'block';
+        produktInput.required = true;
+        select.required = false;
+    } else if (select.value) {
+        produktInput.style.display = 'none';
+        produktInput.required = false;
+        select.required = true;
+    } else {
+        produktInput.style.display = 'none';
+        produktInput.required = false;
+        select.required = true;
     }
 }
 
@@ -568,9 +607,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Setup dropdowns
         const saleSelect = document.getElementById('forsaljning-artikel');
         const purchaseSelect = document.getElementById('inkop-artikel');
+        const inventorySelect = document.getElementById('lager-artikel');
         
         if (saleSelect) saleSelect.addEventListener('change', handleSaleArticleChange);
         if (purchaseSelect) purchaseSelect.addEventListener('change', handlePurchaseArticleChange);
+        if (inventorySelect) inventorySelect.addEventListener('change', handleInventoryArticleChange);
         
         // Set today's date and load data
         setTodayDate();
