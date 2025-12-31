@@ -21,7 +21,7 @@ function setTodayDate() {
 }
 
 // Tab navigation
-function showTab(tabName) {
+function showTab(tabName, element) {
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -36,7 +36,9 @@ function showTab(tabName) {
     document.getElementById(tabName).classList.add('active');
     
     // Add active class to selected button
-    event.target.classList.add('active');
+    if (element) {
+        element.classList.add('active');
+    }
     
     // Reload data for current tab
     loadAllData();
